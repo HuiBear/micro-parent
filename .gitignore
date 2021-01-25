@@ -1,0 +1,44 @@
+HELP.md
+ykh-backend-clientapp/target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+zyj/
+**/local/*.yml
+
+### Build Artifacts ###
+.gradle/
+build/
+**/target/
+bin/
+dependency-reduced-pom.xml
+/out/
+
+### STS ###
+.apt_generated
+.classpath
+.factorypath
+.project
+.settings
+.springBeans
+.sts4-cache
+
+### IntelliJ IDEA ###
+.idea
+**/*.iws
+**/*.iml
+*.iml
+**/*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+
+### VS Code ###
+.vscode/

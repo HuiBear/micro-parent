@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.micro.ykh.dao.fwtuser.FwtSysRoleMapper">
+    <resultMap id="BaseResultMap" type="com.micro.ykh.dao.entity.fwtuser.FwtSysRole">
+        <!--@mbg.generated-->
+        <!--@Table fwt_sys_role-->
+        <id column="id" jdbcType="INTEGER" property="id"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+        <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
+        <result column="role_sort" jdbcType="INTEGER" property="roleSort"/>
+        <result column="role_description" jdbcType="VARCHAR" property="roleDescription"/>
+        <result column="create_user" jdbcType="VARCHAR" property="createUser"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_user" jdbcType="VARCHAR" property="updateUser"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+        <result column="status" javaType="Integer" property="status"/>
+        <result column="del_flag" javaType="Integer" property="delFlag"/>
+        <result column="menu_check_strictly" javaType="Integer" property="menuCheckStrictly"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+        <!--@mbg.generated-->
+        id, role_name, role_code,role_sort, role_description, create_user, create_time, update_user,
+        update_time,status
+    </sql>
+
+    <sql id="selectRoleVo">
+        SELECT distinct r.id,
+                        r.role_name,
+                        r.role_code,
+                        r.role_sort,
+                        r.role_description,
+                        r.create_user,
+                        r.create_time,
+                        r.update_user,
+                        r.update_time,
+                        r.status,
+                        r.menu_check_strictly
+        FROM fwt_sys_role r
+                 left join fwt_sys_user_role ur on ur.role_id = r.id
+                 left join fwt_sys_user u on u.id = ur.user_id
+    </sql>
+
+    <select id="getFwtSysRoleList" resultMap="BaseResultMap">
+        <include refid="selectRoleVo"/>
+        WHERE r.del_flag = 0 and ur.user_id = #{userId}
+    </select>
+
+    <select id="selectRoleListByUserId" parameterType="Integer" resultType="Integer">
+        select r.id
+        from fwt_sys_role r
+        left join fwt_sys_user_role ur on ur.role_id = r.id
+        left join fwt_sys_user u on u.id = ur.user_id
+        where u.id = #{userId}
+    </select>
+
+    <select id="selectRoleList" resultMap="BaseResultMap">
+        <include refid="selectRoleVo"/>
+        WHERE r.del_flag = 0 AND r.status = 1
+        <if test="fwtRoleDto.roleName != null and fwtRoleDto.roleName != ''">
+            AND r.role_name like concat('%', #{fwtRoleDto.roleName}, '%')
+        </if>
+        <if test="fwtRoleDto.roleCode != null and fwtRoleDto.roleCode != ''">
+            AND r.role_code = #{fwtRoleDto.roleCode,jdbcType=VARCHAR}
+        </if>
+        <if test="fwtRoleDto.beginTime != null and fwtRoleDto.beginTime != ''">
+            AND date_format(r.create_time,'%y%m%d') &gt;= date_format(#{fwtRoleDto.beginTime,jdbcType=VARCHAR},'%y%m%d')
+        </if>
+        <if test="fwtRoleDto.endTime != null and fwtRoleDto.endTime != ''">
+            AND date_format(r.create_time,'%y%m%d') &lt;= date_format(#{fwtRoleDto.endTime,jdbcType=VARCHAR},'%y%m%d')
+        </if>
+    </select>
+
+    <select id="selectRoleById" resultMap="BaseResultMap">
+        <include refid="selectRoleVo"/>
+        where r.del_flag = 0 and r.id = #{roleId} and r.status = 1
+    </select>
+
+</mapper>

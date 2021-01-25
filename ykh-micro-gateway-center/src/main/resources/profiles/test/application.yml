@@ -1,0 +1,73 @@
+server:
+  port: 8081
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      enabled: true
+      discovery:
+        locator:
+          lower-case-service-id: true
+      routes:
+      # Add your routes here.
+      # 用户中心路由
+      - id: user-center-route
+        uri: lb://user-center
+        predicates:
+          - Path=/oauth/**,/user/**
+      # 物业端路由
+      - id: property-service-route
+        uri: lb://property-service
+        predicates:
+          - Path=/property-service/**
+      # 平台端路由
+      - id: fwt-platform-route
+        uri: lb://fwt-platform
+        predicates:
+          - Path=/fwt-platform/**
+      # 物业端路由
+      - id: client-app-route
+        uri: lb://client-app
+        predicates:
+          - Path=/client-app/**
+      # 店铺端路由
+      - id: shop-app-route
+        uri: lb://shop-app
+        predicates:
+          - Path=/shop-app/**
+    nacos:
+      discovery:
+        server-addr: 94.191.93.84:8848
+#        server-addr: 192.168.196.128:8848,192.168.196.129:8848,192.168.196.130:8848
+        ip: 127.0.0.1
+  main:
+    # 解决Bean重复定义问题
+    allow-bean-definition-overriding: true
+
+  # redis的配置
+  redis:
+    host: 94.191.66.197
+    password: 890IOPkl;
+    port: 6379
+    jedis:
+      pool:
+        min-idle: 10
+        max-idle: 20
+        max-wait: -1ms
+        max-active: 200
+    timeout: 30s
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+  endpoint:
+    health:
+      show-details: always
+#ribbon配置
+ribbon:
+  eager-load:
+    enabled: true
